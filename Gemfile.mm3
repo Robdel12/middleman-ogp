@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "middleman-core", '~> 3.2'
 gem "middleman-blog", '~> 3.5'
+gem "nokogiri", "1.7.0.1"
 
 # Specify your gem's dependencies in middleman-ogp.gemspec
 gemspec
@@ -19,5 +20,3 @@ gem "slim"
 
 # Code Quality
 gem "cane", :platforms => [:mri_19, :mri_20], :require => false
-
-

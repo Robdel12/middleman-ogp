@@ -1,6 +1,7 @@
 require 'padrino-helpers'
 require 'active_support'
 require 'middleman-core/extensions'
+require 'nokogiri'
 
 module Middleman
   module OGP
@@ -22,13 +23,24 @@ module Middleman
           opts = current_resource.data['ogp'] || {}
           is_blog_article = Middleman::OGP::Helper.blog && respond_to?(:is_blog_article?) && is_blog_article?
           if is_blog_article
+            # Strip the HTML out of the article summary
+            blog_description = Nokogiri::HTML(current_article.summary(180, "..."))
+            blog_image_url = "#{Middleman::OGP::Helper.base_url.chop}#{current_article.data[:image]}"
+
             opts.deep_merge4!({
               og: {
                 type: 'article',
+                image: blog_image_url,
+                description: blog_description.search('//text()').text
               },
               article: {
                 published_time: current_article.date.to_time.utc.iso8601,
-                tag: current_article.tags,
+                tag: current_article.tags
+              },
+              fb: {
+                type: 'article',
+                image: blog_image_url,
+                description: blog_description.search('//text()').text
               }
             })
           end
